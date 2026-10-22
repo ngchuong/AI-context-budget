@@ -1,0 +1,145 @@
+{
+  "name": "ai-context-budget",
+  "displayName": "AI-context-budget",
+  "description": "measurement cost AI",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.140.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aiContextBudget.analyzeWorkspace",
+        "title": "Analyze Workspace Tokens",
+        "category": "AI Context Budget",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "aiContextBudget.calculateCost",
+        "title": "Calculate AI Context Cost",
+        "category": "AI Context Budget"
+      },
+      {
+        "command": "aiContextBudget.copyAsPrompt",
+        "title": "Copy as AI Prompt Context",
+        "category": "AI Context Budget"
+      },
+      {
+        "command": "aiContextBudget.selectModels",
+        "title": "Select Models to Compare",
+        "category": "AI Context Budget",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "aiContextBudget.refreshPrices",
+        "title": "Refresh Model Prices",
+        "category": "AI Context Budget",
+        "icon": "$(cloud-download)"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "aiContextBudget.calculateCost",
+          "group": "aiContextBudget@1"
+        },
+        {
+          "command": "aiContextBudget.copyAsPrompt",
+          "group": "aiContextBudget@2"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "aiContextBudget.analyzeWorkspace",
+          "when": "view == aiContextBudget.panel",
+          "group": "navigation"
+        },
+        {
+          "command": "aiContextBudget.selectModels",
+          "when": "view == aiContextBudget.panel",
+          "group": "navigation"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "aiContextBudget",
+          "title": "AI Context Budget",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "aiContextBudget": [
+        {
+          "type": "webview",
+          "id": "aiContextBudget.panel",
+          "name": "Cost & Context"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "AI Context Budget",
+      "properties": {
+        "aiContextBudget.warningThreshold": {
+          "type": "number",
+          "default": 30000,
+          "description": "Số token bắt đầu vùng vàng (cảnh báo)."
+        },
+        "aiContextBudget.dangerThreshold": {
+          "type": "number",
+          "default": 100000,
+          "description": "Số token bắt đầu vùng đỏ (quá lớn)."
+        },
+        "aiContextBudget.models": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "markdownDescription": "Danh sách id model (theo [OpenRouter](https://openrouter.ai/models), ví dụ `anthropic/claude-sonnet-5.5`) để so sánh chi phí. Model đầu tiên dùng cho status bar. Để trống = tự lấy model mới nhất của OpenAI, Anthropic, Google. Dùng lệnh **Select Models to Compare** để chọn nhanh."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "24.x",
+    "@types/vscode": "^1.140.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0",
+    "eslint": "^10.5.0",
+    "ts-loader": "^9.6.2",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.1",
+    "webpack": "^5.107.2",
+    "webpack-cli": "^7.0.3"
+  },
+  "overrides": {
+    "diff": "^8.0.4",
+    "serialize-javascript": "^7.0.6"
+  },
+  "dependencies": {
+    "ignore": "^7.0.13",
+    "js-tiktoken": "^1.0.21"
+  }
+}
